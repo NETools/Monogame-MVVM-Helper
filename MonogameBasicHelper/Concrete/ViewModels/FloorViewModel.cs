@@ -1,15 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonogameBasicHelper.Attributes;
-using MonogameBasicHelperDLL.Concrete.Adapters;
-using MonogameBasicHelperDLL.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MonogameBasicHelper.Concrete.Adapters;
+using MonogameBasicHelper.Scenes;
 
-namespace MonogameBasicHelperDLL.Concrete.ViewModels
+namespace MonogameBasicHelper.Concrete.ViewModels
 {
     public class FloorViewModel : IGraphicsViewModel, IScene
     {

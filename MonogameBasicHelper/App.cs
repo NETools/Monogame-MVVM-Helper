@@ -1,10 +1,6 @@
 ﻿using MonogameBasicHelper.Test;
-using MonogameBasicHelper.View;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MonogameBasicHelper.ViewGenerator;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace MonogameBasicHelper
@@ -14,15 +10,19 @@ namespace MonogameBasicHelper
         public static void Main(string[] args)
         {
             TestViewModel testViewModel = new TestViewModel();
-            var uiMapper = UiViewModelControlMapper<TestViewModel>.New(testViewModel);
 
             Form frm = new Form();
-            Panel panel = new Panel();
-            panel.AutoScroll = true;
-            panel.Size = new System.Drawing.Size(frm.Size.Width - 20, frm.Size. Height - 40);
-            frm.Controls.Add(panel);
+            frm.Size = new System.Drawing.Size(500, 500);
+            var cntrl = AnnotationBasedPropertyViewGenerator<TestViewModel>.Create(testViewModel);
+            
+            cntrl.Padding = new Padding(10);
+            cntrl.ForeColor = Color.Red;
+            cntrl.Font = new Font("Arial", 12, FontStyle.Bold);
+            cntrl.Initialize();
 
-            uiMapper.GenerateUi(panel);
+            frm.Controls.Add(cntrl);
+
+            testViewModel.N = 161;
 
             Application.Run(frm); 
         }

@@ -1,14 +1,13 @@
-﻿using MonogameBasicHelperDLL.ContainerService;
+﻿using MonogameBasicHelper.ContainerService;
+using MonogameBasicHelper.Events;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Reflection;
-using MonogameBasicHelperDLL.Events;
 using System.Drawing;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
-namespace MonogameBasicHelperDLL
+namespace MonogameBasicHelper
 {
     internal static class Helper
     {
@@ -56,6 +55,7 @@ namespace MonogameBasicHelperDLL
                 }
             }
         }
+
 
         public static SizeF MeasureStringSize(Label label)
         {

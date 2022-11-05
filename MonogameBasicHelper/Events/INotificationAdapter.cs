@@ -1,11 +1,6 @@
-﻿using MonogameBasicHelperDLL.MVVM;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MonogameBasicHelper.MVVM;
 
-namespace MonogameBasicHelperDLL.Events
+namespace MonogameBasicHelper.Events
 {
     public interface INotificationAdapter : IAdapter
     {

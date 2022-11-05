@@ -1,17 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonogameBasicHelperDLL.Concrete.ViewModels;
-using MonogameBasicHelperDLL.ContainerService;
-using MonogameBasicHelperDLL.Events;
-using MonogameBasicHelperDLL.MVVM;
-using MonogameBasicHelperDLL.Scenes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MonogameBasicHelper.Concrete.ViewModels;
+using MonogameBasicHelper.ContainerService;
+using MonogameBasicHelper.Events;
+using MonogameBasicHelper.MVVM;
+using MonogameBasicHelper.Scenes;
 
-namespace MonogameBasicHelperDLL.Concrete.Adapters
+namespace MonogameBasicHelper.Concrete.Adapters
 {
     public class FloorAdapter : IAdapter
     {
@@ -19,7 +14,7 @@ namespace MonogameBasicHelperDLL.Concrete.Adapters
         private INotificationAdapter NotificationAdapter { get; }
         public FloorAdapter(INotificationAdapter notificationAdapter)
         {
-            this.NotificationAdapter = notificationAdapter;
+            NotificationAdapter = notificationAdapter;
         }
 
         public void Load()
@@ -47,10 +42,10 @@ namespace MonogameBasicHelperDLL.Concrete.Adapters
             }
 
             var vertexBuffer = new VertexBuffer(FloorViewModel.GraphicsDevice, typeof(VertexPositionColor), vertices.Length, BufferUsage.WriteOnly);
-            vertexBuffer.SetData<VertexPositionColor>(vertices);
+            vertexBuffer.SetData(vertices);
 
             var indexBuffer = new IndexBuffer(FloorViewModel.GraphicsDevice, IndexElementSize.ThirtyTwoBits, indices.Length, BufferUsage.WriteOnly);
-            indexBuffer.SetData<int>(indices);
+            indexBuffer.SetData(indices);
 
             NotificationAdapter.Notify<INotificationReceiver<(IScene, VertexBuffer, IndexBuffer)>>(this, ((IScene)FloorViewModel, vertexBuffer, indexBuffer));
         }

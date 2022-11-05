@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MonogameBasicHelper.MVVM;
+using System;
 
 namespace MonogameBasicHelper.Attributes
 {
 
     [AttributeUsage(AttributeTargets.Property)]
-    public class ScrollBarElement : UiElement
+    public class TrackBarElement : UiElement
     {
+        public int TickFrequency { get; set; } = 10;
         public int Min { get; set; }
         public int Max { get; set; }
         public int Start { get; set; }
+        internal IValueTextConverter ValueToTextConverter { get; set; }
+        public Type ValueToTextConverterType { get; set; }
     }
 }

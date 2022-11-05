@@ -1,34 +1,34 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonogameBasicHelperDLL.Concrete.Adapters;
-using MonogameBasicHelperDLL.Events;
-using MonogameBasicHelperDLL.MVVM;
-using System;
+using MonogameBasicHelper.Concrete.Adapters;
+using MonogameBasicHelper.Events;
+using MonogameBasicHelper.MVVM;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
-namespace MonogameBasicHelperDLL.Scenes
+namespace MonogameBasicHelper.Scenes
 {
     public abstract class BaseSceneViewModel : IViewModel,
-        INotificationReceiver<(IScene, VertexBuffer, IndexBuffer)>
+        INotificationReceiver<(IScene scene, VertexBuffer vertexBuffer, IndexBuffer indexBuffer)>,
+        INotificationReceiver<(IScene scene, IndexBuffer indexBuffer)>,
+        INotificationReceiver<(IScene scene, VertexBuffer vertexBuffer)>
     {
         private List<IScene> _inactiveScenes = new List<IScene>();
         private List<IScene> _activeScenes = new List<IScene>();
+
+        private Semaphore _semaphore = new Semaphore(1, 1);
 
         public GraphicsDevice GraphicsDevice { get; private set; }
         public GraphViewerCameraAdapter CameraAdapter { get; private set; }
 
         public BaseSceneViewModel(GraphViewerCameraAdapter camera)
         {
-            this.CameraAdapter = camera;
+            CameraAdapter = camera;
         }
 
         public void InitializeContainer(GraphicsDevice graphicsDevice)
         {
-            this.GraphicsDevice = graphicsDevice;
+            GraphicsDevice = graphicsDevice;
         }
 
         public void AddScene(IScene viewModel)
@@ -60,25 +60,51 @@ namespace MonogameBasicHelperDLL.Scenes
 
         }
 
-        public void Notify(object sender, (IScene, VertexBuffer, IndexBuffer) argument)
+        public void Notify(object sender, (IScene scene, VertexBuffer vertexBuffer, IndexBuffer indexBuffer) argument)
         {
-            argument.Item1.VertexBuffer?.Dispose();
-            argument.Item1.IndexBuffer?.Dispose();
+            _semaphore.WaitOne();
 
-            if (argument.Item3 != null)
-                argument.Item1.VertexBuffer = argument.Item2;
-            if (argument.Item3 != null)
-                argument.Item1.IndexBuffer = argument.Item3;
+            argument.scene.VertexBuffer?.Dispose();
+            argument.scene.IndexBuffer?.Dispose();
+
+            if (argument.vertexBuffer != null)
+                argument.scene.VertexBuffer = argument.vertexBuffer;
+            if (argument.indexBuffer != null)
+                argument.scene.IndexBuffer = argument.indexBuffer;
+
+            _semaphore.Release();
+        }
+
+        public void Notify(object sender, (IScene scene, VertexBuffer vertexBuffer) argument)
+        {
+            _semaphore.WaitOne();
+            argument.scene.VertexBuffer?.Dispose();
+            if (argument.vertexBuffer != null)
+                argument.scene.VertexBuffer = argument.vertexBuffer;
+            _semaphore.Release();
+        }
+
+        public void Notify(object sender, (IScene scene, IndexBuffer indexBuffer) argument)
+        {
+            _semaphore.WaitOne();
+            argument.scene.IndexBuffer?.Dispose();
+            if (argument.indexBuffer != null)
+                argument.scene.IndexBuffer = argument.indexBuffer;
+            _semaphore.Release();
         }
 
         public abstract void Update(GameTime gameTime);
 
         public virtual void DrawScene()
         {
+            _semaphore.WaitOne();
             foreach (var scene in _activeScenes)
             {
                 scene.Draw();
             }
+            _semaphore.Release();
         }
+
+      
     }
 }

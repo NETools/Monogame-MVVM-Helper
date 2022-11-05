@@ -1,10 +1,10 @@
-﻿using System;
+﻿using MonogameBasicHelper.Attributes;
+using MonogameBasicHelper.Events;
+using MonogameBasicHelper.MVVM;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonogameBasicHelper.Attributes;
-using MonogameBasicHelperDLL.Events;
-using MonogameBasicHelperDLL.MVVM;
-namespace MonogameBasicHelperDLL.ContainerService
+namespace MonogameBasicHelper.ContainerService
 {
     public class MonogameDepdencyInjection
     {
@@ -19,7 +19,7 @@ namespace MonogameBasicHelperDLL.ContainerService
 
             public override bool Equals(object obj)
             {
-                return obj.GetHashCode().Equals(this.GetHashCode());
+                return obj.GetHashCode().Equals(GetHashCode());
             }
         }
 
@@ -124,7 +124,7 @@ namespace MonogameBasicHelperDLL.ContainerService
             if (ctors.Length > 1)
                 throw new InvalidOperationException("Die vom Depedency Injection verwaltete Klasse darf nicht über mehr als ein Konstruktor verfügen.");
 
-            T currentInstance = default(T);
+            T currentInstance = default;
 
             var ctor = ctors[0];
             List<object> suitableDependencies = new List<object>();

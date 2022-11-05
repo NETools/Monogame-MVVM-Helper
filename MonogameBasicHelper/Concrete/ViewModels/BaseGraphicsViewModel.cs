@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MonogameBasicHelperDLL.MVVM;
-
-
-namespace MonogameBasicHelperDLL.Concrete.ViewModels
+using MonogameBasicHelper.MVVM;
+namespace MonogameBasicHelper.Concrete.ViewModels
 {
     public interface IGraphicsViewModel : IViewModel
     {

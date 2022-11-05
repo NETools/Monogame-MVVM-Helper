@@ -2,14 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonogameBasicHelper.Attributes;
-using MonogameBasicHelperDLL.MVVM;
+using MonogameBasicHelper.MVVM;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MonogameBasicHelperDLL.Concrete.Adapters
+namespace MonogameBasicHelper.Concrete.Adapters
 {
     public class GraphViewerCameraAdapter : IAdapter
     {
@@ -104,8 +100,8 @@ namespace MonogameBasicHelperDLL.Concrete.Adapters
 
         private void CalculateReferencePoint()
         {
-            Vector3 nearPoint = new Vector3((float)Mouse.GetState().X, (float)Mouse.GetState().Y, 0);
-            Vector3 farPoint = new Vector3((float)Mouse.GetState().X, (float)Mouse.GetState().Y, 1);
+            Vector3 nearPoint = new Vector3(Mouse.GetState().X, Mouse.GetState().Y, 0);
+            Vector3 farPoint = new Vector3(Mouse.GetState().X, Mouse.GetState().Y, 1);
 
             nearPoint = GraphicsDevice.Viewport.Unproject(nearPoint, ProjectionMatrix, ViewMatrix, Matrix.CreateTranslation(RotatedCameraPosition));
             farPoint = GraphicsDevice.Viewport.Unproject(farPoint, ProjectionMatrix, ViewMatrix, Matrix.CreateTranslation(RotatedCameraPosition));
@@ -170,10 +166,10 @@ namespace MonogameBasicHelperDLL.Concrete.Adapters
             // Am Ende müssen die Centers wieder gefixt werden.
             FixCenters();
             CalculateReferencePoint();
-            _currentZoomDirection = (_zoomTarget - RotatedCameraPosition);
+            _currentZoomDirection = _zoomTarget - RotatedCameraPosition;
         }
 
-    
+
 
         /// <summary>
         /// Beendet die Rotation
@@ -213,7 +209,7 @@ namespace MonogameBasicHelperDLL.Concrete.Adapters
             RotatedCameraPosition = Vector3.Transform(CameraPosition, _lastRotation);
             FixCenters();
             CalculateReferencePoint();
-            _currentZoomDirection = (_zoomTarget - RotatedCameraPosition);
+            _currentZoomDirection = _zoomTarget - RotatedCameraPosition;
         }
 
         public void EndTranslation()

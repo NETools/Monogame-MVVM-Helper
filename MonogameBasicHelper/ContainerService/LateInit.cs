@@ -1,23 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MonogameBasicHelperDLL.ContainerService
+﻿namespace MonogameBasicHelper.ContainerService
 {
-    public class LateInit<T>  
+    public class LateInit<T>
     {
         private T _value;
         internal bool Activated { get; set; }
-        
+
         public T Value
         {
             get
             {
                 if (Activated)
                     return _value;
-                else return default(T);
+                else return default;
             }
             internal set
             {

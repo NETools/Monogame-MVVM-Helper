@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MonogameBasicHelper.MVVM;
+using System;
 
 namespace MonogameBasicHelper.Attributes
 {
@@ -10,6 +7,9 @@ namespace MonogameBasicHelper.Attributes
     public class UiElement : Attribute
     {
         public string GroupName { get; set; }
-        public string LabelText { get; set; }
+        public string Text { get; set; }
+        public int Width { get; set; } = 250;
+        internal IConverter Converter { get; set; }
+        public Type ValueConverterType { get; set; }
     }
 }
