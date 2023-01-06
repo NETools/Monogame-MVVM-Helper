@@ -10,11 +10,12 @@ namespace MonogameBasicHelper.ContainerService
     {
         internal struct T_Info
         {
-            internal Type Type;
+            internal Type InterfaceType;
+            internal Type ConcreteType;
 
             public override int GetHashCode()
             {
-                return Type.Name.GetHashCode();
+                return InterfaceType.Name.GetHashCode();
             }
 
             public override bool Equals(object obj)
@@ -48,15 +49,16 @@ namespace MonogameBasicHelper.ContainerService
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="args"></param>
-        public void AddViewModel<T>(params object[] args) where T : class, IViewModel
+        public void AddViewModel<Interface, Concrete>(params object[] args) where Interface : class, IViewModel where Concrete : class, Interface
         {
             _viewModelList.Add(new T_Info()
             {
-                Type = typeof(T)
+                InterfaceType = typeof(Interface),
+                ConcreteType = typeof(Concrete)
             },
             new Lazy<IViewModel>(() =>
             {
-                return GetInstance<T>(args);
+                return GetInstance<Concrete>(args);
             }));
         }
 
@@ -65,15 +67,16 @@ namespace MonogameBasicHelper.ContainerService
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="args"></param>
-        public void AddAdapter<T>(params object[] args) where T : class, IAdapter
+        public void AddAdapter<Interface, Concrete>(params object[] args) where Interface : class, IAdapter where Concrete : class, Interface
         {
             _adapterList.Add(new T_Info()
             {
-                Type = typeof(T)
+                InterfaceType = typeof(Interface),
+                ConcreteType = typeof(Concrete)
             },
             new Lazy<IAdapter>(() =>
             {
-                return GetInstance<T>(args);
+                return GetInstance<Concrete>(args);
             }));
         }
 
@@ -86,7 +89,7 @@ namespace MonogameBasicHelper.ContainerService
         {
             return (T)_viewModelList[new T_Info()
             {
-                Type = typeof(T)
+                InterfaceType = typeof(T)
             }].Value;
         }
 
@@ -94,7 +97,7 @@ namespace MonogameBasicHelper.ContainerService
         {
             foreach (var adapter in _adapterList)
             {
-                var interfaces = adapter.Key.Type.GetInterfaces();
+                var interfaces = adapter.Key.ConcreteType.GetInterfaces();
                 if (interfaces.Contains(forInterface))
                 {
                     return adapter.Key;
@@ -109,12 +112,12 @@ namespace MonogameBasicHelper.ContainerService
         /// <summary>
         /// Returns an instance of the specified type. The object is completely managed by the library.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="Concrete"></typeparam>
         /// <param name="args"></param>
         /// <returns></returns>
-        public T New<T>(params object[] args)
+        public Concrete New<Concrete>(params object[] args) where Concrete : class
         {
-            return GetInstance<T>(args);
+            return GetInstance<Concrete>(args);
         }
 
         private T GetInstance<T>(params object[] args)
@@ -158,8 +161,8 @@ namespace MonogameBasicHelper.ContainerService
 
             currentInstance = (T)Activator.CreateInstance(currentInspectedType, suitableDependencies.ToArray());
 
-            var earlyInit = _earlyInits.FirstOrDefault(p => p.Key.Type.Equals(currentInspectedType));
-            if (earlyInit.Key.Type != null)
+            var earlyInit = _earlyInits.FirstOrDefault(p => p.Key.InterfaceType.Equals(currentInspectedType));
+            if (earlyInit.Key.ConcreteType != null)
             {
                 earlyInit.Value.Invoke(currentInstance);
                 _earlyInits.Remove(earlyInit.Key);
@@ -194,9 +197,9 @@ namespace MonogameBasicHelper.ContainerService
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="action"></param>
-        public void AddPreStartInitialization<T>(Action<T> action) where T : IViewModel
+        public void AddPreStartInitialization<Interface>(Action<Interface> action) where Interface : IViewModel
         {
-            _earlyInits.Add(new T_Info() { Type = typeof(T) }, action);
+            _earlyInits.Add(new T_Info() { InterfaceType = typeof(Interface) }, action);
         }
     }
 }
